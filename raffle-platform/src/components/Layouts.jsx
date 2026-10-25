@@ -83,22 +83,28 @@ export function BuyerLayout() {
 export function PosLayout() {
   const { user, logout } = useSession()
   const nav = useNavigate()
+  const tabs = (
+    <>
+      <NavLink to="/pos" end><Icon name="ticket" />Sell</NavLink>
+      <NavLink to="/pos/scan"><Icon name="scan" />Scan</NavLink>
+      <NavLink to="/pos/earnings"><Icon name="trend" />Earnings</NavLink>
+    </>
+  )
   return (
     <div className="phone pos">
       <header className="topbar dark">
-        <div className="grow">
-          <div className="bold">Seller {user.id}</div>
-          <div className="tiny" style={{ color: '#c9d3df' }}>{user.name} · Terminal {user.deviceId} · {user.area}</div>
+        <div className="pos-top">
+          <div className="grow">
+            <div className="bold">Seller {user.id}</div>
+            <div className="tiny" style={{ color: '#c9d3df' }}>{user.name} · Terminal {user.deviceId} · {user.area}</div>
+          </div>
+          <nav className="pos-tabs" aria-label="POS">{tabs}</nav>
+          <span className="badge" style={{ background: '#8fe3c8', color: '#0f1b2d' }}>Online</span>
+          <button className="btn ghost icon-btn" aria-label="Log out" onClick={() => { logout(); nav('/login') }}><Icon name="logout" /></button>
         </div>
-        <span className="badge" style={{ background: '#8fe3c8', color: '#0f1b2d' }}>Online</span>
-        <button className="btn ghost icon-btn" aria-label="Log out" onClick={() => { logout(); nav('/login') }}><Icon name="logout" /></button>
       </header>
       <Outlet />
-      <nav className="bottomnav" aria-label="POS">
-        <NavLink to="/pos" end><Icon name="ticket" />Sell</NavLink>
-        <NavLink to="/pos/scan"><Icon name="scan" />Scan</NavLink>
-        <NavLink to="/pos/earnings"><Icon name="trend" />Earnings</NavLink>
-      </nav>
+      <nav className="bottomnav pos-bottomnav" aria-label="POS">{tabs}</nav>
     </div>
   )
 }
@@ -106,6 +112,9 @@ export function PosLayout() {
 export function AdminLayout() {
   const { user, logout } = useSession()
   const nav = useNavigate()
+  const loc = useLocation()
+  const [openPath, setOpenPath] = useState(null)
+  const open = openPath === loc.pathname // closes itself after navigating
   const items = [
     ['/admin', 'dashboard', 'Dashboard', true],
     ['/admin/raffles', 'list', 'Raffles'],
@@ -114,21 +123,34 @@ export function AdminLayout() {
     ['/admin/countries', 'globe', 'Countries'],
     ['/admin/audit', 'log', 'Audit log'],
   ]
+  const current = items.find(([to, , , end]) => (end ? loc.pathname === to : loc.pathname.startsWith(to)))
   return (
     <div className="admin">
-      <nav className="sidebar" aria-label="Admin">
-        <Link to="/admin" className="brand"><span className="logo">{BRAND.mark}</span>{BRAND.name} Admin</Link>
-        {items.map(([to, icon, label, end]) => (
-          <NavLink key={to} to={to} end={end} className={({ isActive }) => `nav row ${isActive ? 'active' : ''}`}>
-            <Icon name={icon} size={18} /> {label}
-          </NavLink>
-        ))}
-        <div className="who">
-          <div className="bold" style={{ color: '#fff' }}>{user.name}</div>
-          <div>{user.role === 'super_admin' ? 'Super Admin' : 'Operator'} · {user.id}</div>
-          <button className="btn sm" style={{ marginTop: 10, background: 'transparent', color: '#fff', borderColor: '#3a4a62' }} onClick={() => { logout(); nav('/login') }}>
-            <Icon name="logout" size={16} /> Log out
+      <nav className={`sidebar ${open ? 'open' : ''}`} aria-label="Admin">
+        <div className="sidebar-top">
+          <Link to="/admin" className="brand"><span className="logo">{BRAND.mark}</span>{BRAND.name} Admin</Link>
+          <button
+            className="btn menu-btn"
+            aria-expanded={open}
+            aria-controls="admin-menu"
+            onClick={() => setOpenPath(open ? null : loc.pathname)}
+          >
+            <Icon name={open ? 'x' : 'list'} size={18} /> {open ? 'Close' : current?.[2] ?? 'Menu'}
           </button>
+        </div>
+        <div className="sidebar-menu" id="admin-menu">
+          {items.map(([to, icon, label, end]) => (
+            <NavLink key={to} to={to} end={end} className={({ isActive }) => `nav row ${isActive ? 'active' : ''}`}>
+              <Icon name={icon} size={18} /> {label}
+            </NavLink>
+          ))}
+          <div className="who">
+            <div className="bold" style={{ color: '#fff' }}>{user.name}</div>
+            <div>{user.role === 'super_admin' ? 'Super Admin' : 'Operator'} · {user.id}</div>
+            <button className="btn sm" style={{ marginTop: 10, background: 'transparent', color: '#fff', borderColor: '#3a4a62' }} onClick={() => { logout(); nav('/login') }}>
+              <Icon name="logout" size={16} /> Log out
+            </button>
+          </div>
         </div>
       </nav>
       <main className="main">

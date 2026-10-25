@@ -93,6 +93,8 @@ export default function Sell() {
 
   return (
     <main className="content">
+      <div className="two-col">
+      <div className="stack sticky-col">
       {handlesCash && (
       <section className="card flat stack tight" aria-label="Cash float">
         <div className="row between small">
@@ -140,6 +142,8 @@ export default function Sell() {
         </section>
       )}
 
+      </div>
+      <div className="stack">
       {raffle && (
         <section className="card flat" aria-label="Recent sales" style={{ paddingTop: 4, paddingBottom: 4 }}>
           <div className="row between" style={{ padding: '10px 0 6px' }}>
@@ -172,6 +176,9 @@ export default function Sell() {
           </div>
         </section>
       )}
+
+      </div>
+      </div>
 
       {voiding && (
         <VoidDialog

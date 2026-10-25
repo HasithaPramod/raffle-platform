@@ -69,12 +69,14 @@ export default function RaffleDetail() {
   }
 
   return (
-    <main className="content">
+    <main className="content wide">
       <div className="row">
         <Link to="/buyer" className="btn ghost icon-btn" aria-label="Back"><Icon name="back" /></Link>
         <h1 className="grow" style={{ fontSize: 20, fontWeight: 800 }}>{raffle.title}</h1>
         <RaffleStatus status={raffle.status} />
       </div>
+      <div className="two-col">
+      <div className="stack">
       <div className="detail-art"><PrizeArt name={raffle.prizes[0]?.name} /></div>
       <div className="row wrap">
         <span className="badge" style={{ background: '#fff', border: '1px solid var(--line)' }}>Draw: {dateTime(raffle.drawAt, raffle.timezone)}</span>
@@ -90,6 +92,8 @@ export default function RaffleDetail() {
         ))}
       </section>
 
+      </div>
+      <div className="stack sticky-col">
       {raffle.status === 'on_sale' && raffle.mode === 'free_entry' ? (
         <section className="card stack" aria-label="Enter free">
           <div className="bold">Free to enter</div>
@@ -144,6 +148,8 @@ export default function RaffleDetail() {
       ) : (
         <Link className="btn dark big" to={`/buyer/live/${raffle.id}`}>See the draw and results</Link>
       )}
+      </div>
+      </div>
 
       {hold && (
         <Checkout

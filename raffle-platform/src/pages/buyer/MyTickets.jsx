@@ -38,11 +38,12 @@ export default function MyTickets() {
   }
 
   return (
-    <main className="content">
+    <main className="content wide">
       <h1 style={{ fontSize: 20, fontWeight: 800 }}>My tickets</h1>
       {!tickets.length && <Empty>No tickets yet. <Link to="/buyer">Buy one</Link>.</Empty>}
       {selected && (
-        <article className="card" style={{ padding: 0, overflow: 'hidden' }}>
+        <div className="two-col">
+        <article className="card sticky-col" style={{ padding: 0, overflow: 'hidden' }}>
           <div className="row between" style={{ background: 'var(--ink)', color: '#fff', padding: '12px 16px' }}>
             <span className="bold">{raffle.title}</span>
             <span className="tiny" style={{ color: '#c9d3df' }}>Draw {dateTime(raffle.drawAt, raffle.timezone)}</span>
@@ -67,9 +68,8 @@ export default function MyTickets() {
             {selected.status === 'won' && <div className="small muted" style={{ textAlign: 'center' }}>To claim, show this QR and the code at any seller or our office.</div>}
           </div>
         </article>
-      )}
       {tickets.length > 1 && (
-        <>
+        <div className="stack">
           <h2 style={{ fontSize: 16, fontWeight: 800 }}>All tickets</h2>
           <div className="card list" style={{ padding: '0 14px' }}>
             {tickets.map((t) => {
@@ -91,7 +91,9 @@ export default function MyTickets() {
               )
             })}
           </div>
-        </>
+        </div>
+      )}
+        </div>
       )}
     </main>
   )

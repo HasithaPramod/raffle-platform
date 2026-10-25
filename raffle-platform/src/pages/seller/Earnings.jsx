@@ -14,6 +14,8 @@ export default function Earnings() {
 
   return (
     <main className="content">
+      <div className="two-col">
+      <div className="stack">
       {current && (
         <section className="card flat stack tight">
           <div className="small bold muted">Commission earned · {current.raffle.title}</div>
@@ -42,6 +44,7 @@ export default function Earnings() {
         {bal.pendingDepositsCents > 0 && <div className="tiny muted">{money(bal.pendingDepositsCents, bal.currency)} deposit waiting for confirmation.</div>}
         <div className="hint">Hand cash or a bank slip to the office. An operator records it and a Super Admin confirms it.{anyOnSale ? ' Commission is paid out after sales close.' : ''}</div>
       </section>
+      </div>
       <section className="card flat" aria-label="By raffle" style={{ paddingTop: 4, paddingBottom: 4 }}>
         <div className="label" style={{ padding: '10px 0 6px' }}>By raffle</div>
         <div className="list">
@@ -59,6 +62,7 @@ export default function Earnings() {
           ))}
         </div>
       </section>
+      </div>
     </main>
   )
 }

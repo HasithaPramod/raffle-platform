@@ -30,12 +30,14 @@ export default function LiveDraw() {
   }
 
   return (
-    <main className="content" style={{ paddingTop: 0, paddingLeft: 0, paddingRight: 0 }}>
-      <div className="row" style={{ padding: '12px 16px 0' }}>
+    <main className="content wide live-page">
+      <div className="row">
         <Link to="/buyer/draws" className="btn ghost icon-btn" aria-label="Back"><Icon name="back" /></Link>
         <h1 className="grow" style={{ fontSize: 18, fontWeight: 800 }}>{raffle.title}</h1>
         <RaffleStatus status={raffle.status} />
       </div>
+      <div className="two-col">
+      <div className="sticky-col">
       <div className="video">
         {embed && DEMO ? (
           <a className="btn primary" href={raffle.youtubeUrl} target="_blank" rel="noreferrer"><Icon name="play" /> Watch the live stream on YouTube</a>
@@ -48,7 +50,8 @@ export default function LiveDraw() {
           </div>
         )}
       </div>
-      <div className="stack" style={{ padding: '0 16px' }}>
+      </div>
+      <div className="stack">
         {['on_sale', 'sales_closed'].includes(raffle.status) && (
           <section className="hero">
             <div className="small muted">Draw starts {dateTime(raffle.drawAt, raffle.timezone)}</div>
@@ -105,6 +108,7 @@ export default function LiveDraw() {
             'When sales close, a hash of the secret draw seed is published here so the result can be checked afterwards.'
           )}
         </div>
+      </div>
       </div>
     </main>
   )

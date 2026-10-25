@@ -26,10 +26,11 @@ export default function CheckTicket() {
   }
 
   return (
-    <main className="content">
+    <main className="content wide">
       <h1 style={{ fontSize: 20, fontWeight: 800 }}>Check a ticket</h1>
       <CheckResult res={res} />
       {res && <button className="btn" onClick={() => { setRes(null); setScanKey((k) => k + 1) }}>Check another</button>}
+      <div className="two-col even">
       <section className="card stack" aria-label="Scan QR">
         <h2>Scan the QR</h2>
         <QrScanner key={scanKey} onResult={onScan} />
@@ -48,6 +49,7 @@ export default function CheckTicket() {
         </div>
         <button className="btn dark" type="submit">Check</button>
       </form>
+      </div>
     </main>
   )
 }

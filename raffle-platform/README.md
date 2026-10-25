@@ -45,6 +45,14 @@ Sri Lanka (LKR) is set up as a second country with its own draws and sellers. "R
 - **YouTube:** stream link per raffle, embedded on the buyer draw page.
 - **Audit log:** every action, hash-chained, with a chain check.
 
+## Phone and desktop
+
+Every screen works from 360 px phones to wide desktops with no sideways scrolling:
+
+- **Buyer site:** one column with a bottom menu on phones; header menu and two-column raffle, live draw, ticket and check pages on desktop.
+- **Seller POS:** phone layout with a bottom menu on POS terminals and phones; on tablets and desktops the sale form and recent sales sit side by side, with tabs in the header.
+- **Admin:** a compact top bar with a menu button on phones; a fixed sidebar on desktop. Wide tables scroll inside their card.
+
 ## Your brand
 
 Set the name, logo letters, tagline, contact details and licence number in `src/brand.js`. The buyer site, POS, admin and printed tickets all read from it.

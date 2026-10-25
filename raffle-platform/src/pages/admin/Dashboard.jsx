@@ -45,18 +45,18 @@ function ApprovalRow({ item }) {
   if (item.kind === 'locked') text = `${ticketNo(item.ticket.number)} · too many wrong codes`
 
   return (
-    <div className="list-row">
+    <div className="list-row wrap">
       <span className={`tag badge ${tone}`}>{label}</span>
-      <div className="grow small">
+      <div className="approval-text small">
         <div>{text}</div>
         <div className="tiny muted">{ago(item.at)}{!canAct ? ' · Super Admin decides' : ''}</div>
         {error && <div className="error">{error}</div>}
       </div>
       {canAct && (
-        <>
+        <div className="approval-actions">
           <button className="btn sm dark" disabled={busy} onClick={() => decide(true)}>{item.kind === 'locked' ? 'Unlock' : 'Approve'}</button>
           {item.kind !== 'locked' && <button className="btn sm" disabled={busy} onClick={() => decide(false)}>Reject</button>}
-        </>
+        </div>
       )}
     </div>
   )
@@ -135,7 +135,7 @@ export default function Dashboard() {
         <h2>Latest SMS sent (simulated)</h2>
         <div className="list">
           {sms.map((m) => (
-            <div key={m.id} className="list-row small"><span className="mono tiny" style={{ width: 100 }}>{m.to}</span><span className="grow">{m.text}</span><span className="tiny muted">{ago(m.at)}</span></div>
+            <div key={m.id} className="list-row wrap small"><span className="mono tiny" style={{ width: 100 }}>{m.to}</span><span className="approval-text">{m.text}</span><span className="tiny muted">{ago(m.at)}</span></div>
           ))}
         </div>
       </section>

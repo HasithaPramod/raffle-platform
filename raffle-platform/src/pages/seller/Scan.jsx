@@ -107,7 +107,7 @@ export default function Scan() {
   }
 
   return (
-    <main className="content">
+    <main className="content" style={{ maxWidth: 720 }}>
       {!res && (
         <section className="card flat stack">
           <h2>Scan a ticket</h2>

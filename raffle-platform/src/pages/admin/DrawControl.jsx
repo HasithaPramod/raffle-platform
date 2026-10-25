@@ -29,7 +29,7 @@ export default function DrawControl() {
   const choices = getRaffles()
     .filter((r) => ['on_sale', 'sales_closed', 'live', 'results'].includes(r.status))
     .sort((a, b) => (order[a.countryId] ?? 99) - (order[b.countryId] ?? 99) || a.drawAt - b.drawAt)
-  const raffle = (id && getRaffle(id)) || choices.find((r) => ['live', 'sales_closed'].includes(r.status)) || choices[0]
+  const raffle = (id && getRaffle(id)) || choices.find((r) => ['live', 'sales_closed'].includes(r.status)) || choices.find((r) => r.status === 'on_sale') || choices[0]
   const [stream, setStream] = useState(null)
 
   if (!raffle) return <Empty>No raffle is ready for a draw.</Empty>
