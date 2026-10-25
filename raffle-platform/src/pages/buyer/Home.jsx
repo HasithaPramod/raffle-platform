@@ -174,6 +174,10 @@ export default function Home() {
             </div>
           )}
         </div>
+        <svg className="hero-wave" viewBox="0 0 1440 56" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 30 C 180 6 360 6 540 24 S 900 52 1080 34 S 1320 8 1440 22 V56 H0 Z" fill="#ffffff22" />
+          <path d="M0 40 C 200 22 400 22 600 36 S 1000 56 1200 40 S 1380 26 1440 32 V56 H0 Z" fill="var(--ground)" />
+        </svg>
       </section>
 
       <section className="wrap section" aria-labelledby="open-h">

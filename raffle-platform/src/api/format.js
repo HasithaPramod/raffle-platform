@@ -1,11 +1,11 @@
 // Money is stored as integer minor units (cents, laari…) in the country's
 // currency. Every amount is shown with its ISO currency code: "MVR 250".
-export function money(cents, currency = 'LKR', { decimals = false } = {}) {
+export function money(cents, currency = 'MVR', { decimals = false } = {}) {
   const v = (cents ?? 0) / 100
   return `${currency} ` + v.toLocaleString('en-US', { minimumFractionDigits: decimals ? 2 : 0, maximumFractionDigits: decimals ? 2 : 0 })
 }
 
-export function moneyShort(cents, currency = 'LKR') {
+export function moneyShort(cents, currency = 'MVR') {
   const v = (cents ?? 0) / 100
   if (Math.abs(v) >= 1_000_000) return `${currency} ` + (v / 1_000_000).toFixed(2).replace(/\.?0+$/, '') + 'M'
   return money(cents, currency)
@@ -77,7 +77,7 @@ export const STATUS_LABEL = {
 }
 
 // "Car (LKR 6,500,000)", but "Cash LKR 5,000" stays as it is.
-export function prizeLabel(p, currency = 'LKR') {
+export function prizeLabel(p, currency = 'MVR') {
   if (!p) return ''
   return p.name.toUpperCase().includes(currency) ? p.name : `${p.name} (${money(p.valueCents, currency)})`
 }

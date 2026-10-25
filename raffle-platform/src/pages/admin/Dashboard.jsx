@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ago, countdown, money, moneyShort, ticketNo } from '../../api/format.js'
-import { decideClaim, decideDeposit, decideRequest, getApprovals, getRaffles, getSms, platformStats, sellerLeaderboard, unlockTicket } from '../../api/server.js'
+import { decideClaim, decideDeposit, decideRequest, getApprovals, getRaffles, getSms, platformStats, sellerLeaderboard, unlockTicket, getCountries } from '../../api/server.js'
 import { Empty, RaffleStatus, useToast } from '../../components/ui.jsx'
 import { useAction, useDb } from '../../hooks.js'
 import { useSession } from '../../session.jsx'
@@ -64,8 +64,11 @@ function ApprovalRow({ item }) {
 
 export default function Dashboard() {
   useDb()
-  const raffles = getRaffles().filter((r) => r.status !== 'draft' && r.status !== 'cancelled')
-  const def = raffles.filter((r) => ['on_sale', 'sales_closed', 'live'].includes(r.status)).sort((a, b) => a.drawAt - b.drawAt)[0] ?? raffles[0]
+  const order = Object.fromEntries(getCountries().map((c, i) => [c.id, i]))
+  const raffles = getRaffles()
+    .filter((r) => r.status !== 'draft' && r.status !== 'cancelled')
+    .sort((a, b) => (order[a.countryId] ?? 99) - (order[b.countryId] ?? 99) || a.drawAt - b.drawAt)
+  const def = raffles.find((r) => ['on_sale', 'sales_closed', 'live'].includes(r.status)) ?? raffles[0]
   const [raffleId, setRaffleId] = useState(def?.id)
   const raffle = raffles.find((r) => r.id === raffleId) ?? def
   const approvals = getApprovals()

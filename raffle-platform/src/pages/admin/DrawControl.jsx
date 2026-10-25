@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { dateTime, money, shortTime, ticketNo, youtubeEmbed } from '../../api/format.js'
-import { closeSales, drawPrize, getRaffle, getRaffles, getSettings, raffleStats, revealSeed, updateRaffle } from '../../api/server.js'
+import { closeSales, drawPrize, getCountries, getRaffle, getRaffles, getSettings, raffleStats, revealSeed, updateRaffle } from '../../api/server.js'
 import { ConfirmButton, Empty, RaffleStatus, useToast } from '../../components/ui.jsx'
 import { DEMO } from '../../env.js'
 import { useAction, useDb } from '../../hooks.js'
@@ -25,7 +25,10 @@ export default function DrawControl() {
   const { user } = useSession()
   const toast = useToast()
   const { busy, error, run } = useAction()
-  const choices = getRaffles().filter((r) => ['on_sale', 'sales_closed', 'live', 'results'].includes(r.status))
+  const order = Object.fromEntries(getCountries().map((c, i) => [c.id, i]))
+  const choices = getRaffles()
+    .filter((r) => ['on_sale', 'sales_closed', 'live', 'results'].includes(r.status))
+    .sort((a, b) => (order[a.countryId] ?? 99) - (order[b.countryId] ?? 99) || a.drawAt - b.drawAt)
   const raffle = (id && getRaffle(id)) || choices.find((r) => ['live', 'sales_closed'].includes(r.status)) || choices[0]
   const [stream, setStream] = useState(null)
 

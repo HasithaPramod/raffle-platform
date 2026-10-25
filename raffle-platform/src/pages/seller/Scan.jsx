@@ -89,7 +89,7 @@ export default function Scan() {
 
   const prize = res?.prize
   const country = res?.raffle ? getCountry(res.raffle.countryId) : null
-  const cur = res?.raffle?.currency ?? 'LKR'
+  const cur = res?.raffle?.currency ?? 'MVR'
   const big = prize && country && prize.valueCents > country.approvalThresholdCents
   const overSellerLimit = prize && country && !big && prize.valueCents > country.sellerPayoutLimitCents
 

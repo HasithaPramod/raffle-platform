@@ -321,7 +321,7 @@ export function sellerBalances(sellerId) {
   const sum = (account) => d.ledger.filter((l) => l.sellerId === sellerId && l.account === account).reduce((a, l) => a + l.amountCents, 0)
   const pendingDeposits = d.deposits.filter((x) => x.sellerId === sellerId && x.status === 'pending').reduce((a, x) => a + x.amountCents, 0)
   const seller = userIn(d, sellerId)
-  const currency = d.countries.find((c) => c.id === seller?.countryId)?.currency ?? 'LKR'
+  const currency = d.countries.find((c) => c.id === seller?.countryId)?.currency ?? 'MVR'
   return { cashOwedCents: sum('seller_cash'), commissionUnpaidCents: sum('seller_commission'), pendingDepositsCents: pendingDeposits, currency }
 }
 
@@ -376,7 +376,7 @@ export function platformStats(raffleId) {
 }
 
 function currencyOfTicket(d, t) {
-  return d.raffles.find((r) => r.id === t?.raffleId)?.currency ?? 'LKR'
+  return d.raffles.find((r) => r.id === t?.raffleId)?.currency ?? 'MVR'
 }
 
 export function getApprovals() {
@@ -396,7 +396,7 @@ export function getApprovals() {
     })
   d.deposits
     .filter((x) => x.status === 'pending')
-    .forEach((x) => items.push({ kind: 'deposit', id: x.id, at: x.at, sellerId: x.sellerId, deposit: x, currency: d.countries.find((c) => c.id === userIn(d, x.sellerId)?.countryId)?.currency ?? 'LKR' }))
+    .forEach((x) => items.push({ kind: 'deposit', id: x.id, at: x.at, sellerId: x.sellerId, deposit: x, currency: d.countries.find((c) => c.id === userIn(d, x.sellerId)?.countryId)?.currency ?? 'MVR' }))
   d.tickets
     .filter((t) => t.codeTries >= d.settings.maxCodeTries)
     .forEach((t) => items.push({ kind: 'locked', id: t.id, at: t.issuedAt, ticket: safeTicket(t) }))
@@ -1099,6 +1099,15 @@ async function buildSeedDb() {
     },
     countries: [
       {
+        id: 'MV', code: 'MV', name: 'Maldives', currency: 'MVR', timezone: 'Indian/Maldives', languages: ['Dhivehi', 'English'],
+        mode: 'paid', idLabel: 'National ID card',
+        approvalThresholdCents: 5_000_000, // MVR 50,000: Super Admin approval + ID above this
+        sellerPayoutLimitCents: 500_000, // MVR 5,000: sellers may pay prizes up to this
+        defaultFloatLimitCents: 2_000_000, // MVR 20,000 cash a seller may hold
+        paymentGateway: '[Choose payment gateway]', smsProvider: '[Choose SMS provider]',
+        enabled: true, legalStatus: 'approved', legalRef: 'DEMO: enter your Maldives government approval reference', legalBy: 'A-01', legalAt: now, createdAt: now,
+      },
+      {
         id: 'LK', code: 'LK', name: 'Sri Lanka', currency: 'LKR', timezone: 'Asia/Colombo', languages: ['Sinhala', 'Tamil', 'English'],
         mode: 'paid', idLabel: 'NIC',
         approvalThresholdCents: 10_000_000, // LKR 100,000: Super Admin approval + NIC above this
@@ -1107,25 +1116,19 @@ async function buildSeedDb() {
         paymentGateway: '[Choose gateway]', smsProvider: '[Choose SMS provider]',
         enabled: true, legalStatus: 'approved', legalRef: 'DEMO ONLY: replace with your legal opinion reference', legalBy: 'A-01', legalAt: now, createdAt: now,
       },
-      {
-        id: 'MV', code: 'MV', name: 'Maldives', currency: 'MVR', timezone: 'Indian/Maldives', languages: ['Dhivehi', 'English'],
-        mode: 'free_entry', idLabel: 'National ID card',
-        approvalThresholdCents: 1_000_000, // MVR 10,000
-        sellerPayoutLimitCents: 200_000, // MVR 2,000
-        defaultFloatLimitCents: 0,
-        paymentGateway: 'Not needed (free entry)', smsProvider: '[Choose SMS provider]',
-        enabled: false, legalStatus: 'pending', legalRef: '', createdAt: now,
-      },
     ],
     users: [
+      { id: 'B-2001', role: 'buyer', countryId: 'MV', name: 'Aishath Ibrahim', mobile: '7771234', status: 'active' },
+      { id: 'B-2002', role: 'buyer', countryId: 'MV', name: 'Mohamed Rasheed', mobile: '9601122', status: 'active' },
+      { id: 'S-2001', role: 'seller', countryId: 'MV', name: 'Ahmed Shifaz', mobile: '7654321', area: 'Malé', deviceId: 'M-01', pin: '1234', floatLimitCents: 2_000_000, commissionOverride: null, status: 'active' },
+      { id: 'S-2002', role: 'seller', countryId: 'MV', name: 'Mariyam Shiuna', mobile: '7712233', area: 'Hulhumalé', deviceId: 'M-02', pin: '1234', floatLimitCents: 2_000_000, commissionOverride: null, status: 'active' },
+      { id: 'S-2003', role: 'seller', countryId: 'MV', name: 'Ibrahim Nazim', mobile: '9774455', area: 'Addu City', deviceId: 'M-03', pin: '1234', floatLimitCents: 2_000_000, commissionOverride: null, status: 'active' },
       { id: 'B-1001', role: 'buyer', countryId: 'LK', name: 'Nimal Perera', mobile: '0771234567', status: 'active' },
       { id: 'B-1002', role: 'buyer', countryId: 'LK', name: 'Ayesha Fernando', mobile: '0712345678', status: 'active' },
       { id: 'S-1042', role: 'seller', countryId: 'LK', name: 'Kasun Silva', mobile: '0761112233', area: 'Tangalle', deviceId: 'T-08', pin: '1234', floatLimitCents: 5_000_000, commissionOverride: null, status: 'active' },
       { id: 'S-0877', role: 'seller', countryId: 'LK', name: 'Dilani Jayasuriya', mobile: '0752223344', area: 'Matara', deviceId: 'T-03', pin: '1234', floatLimitCents: 5_000_000, commissionOverride: 12, status: 'active' },
       { id: 'S-1120', role: 'seller', countryId: 'LK', name: 'Ruwan Kumara', mobile: '0703334455', area: 'Hambantota', deviceId: 'T-11', pin: '1234', floatLimitCents: 3_000_000, commissionOverride: null, status: 'active' },
-      { id: 'B-2001', role: 'buyer', countryId: 'MV', name: 'Aishath Ibrahim', mobile: '7771234', status: 'active' },
-      { id: 'S-2001', role: 'seller', countryId: 'MV', name: 'Ahmed Shifaz', mobile: '7654321', area: 'Malé', deviceId: 'M-01', pin: '1234', floatLimitCents: 0, commissionOverride: null, status: 'active' },
-      { id: 'O-01', role: 'operator', name: 'Chamari (Operator)', status: 'active' },
+      { id: 'O-01', role: 'operator', name: 'Hawwa Zahira (Operator)', status: 'active' },
       { id: 'A-01', role: 'super_admin', name: 'Super Admin', status: 'active' },
     ],
     raffles: [],
@@ -1226,19 +1229,90 @@ async function buildSeedDb() {
   await sell(w, 'S-1042', 25, 200)
   await sell(w, 'S-0877', 30, 400)
 
-  // Maldives: a free-entry promotion, still a draft until legal approval.
-  await createRaffleIn(d, 'A-01', {
+  // ---- Maldives (main market): paid draws in MVR --------------------------
+  const giveEntries = async (raffle, sellerId, count, minutesAgo) => {
+    const sl = userIn(d, sellerId)
+    const made = []
+    for (const n of pickFree(d, raffle, count)) {
+      const { ticket } = await issueTicket(d, raffle, { number: n, channel: 'pos', sellerId, deviceId: sl.deviceId })
+      ticket.issuedAt = now - minutesAgo * MIN
+      made.push(ticket)
+    }
+    return made
+  }
+
+  // A finished Maldives draw, retried until the demo buyer holds a winner.
+  const beforeMv = structuredClone(d)
+  for (let attempt = 0; attempt < 20; attempt++) {
+    Object.assign(d, structuredClone(beforeMv))
+    const pastMv = await createRaffleIn(d, 'A-01', {
+      countryId: 'MV',
+      title: 'Hulhumalé Weekend Draw #50',
+      priceCents: 5_000, // MVR 50
+      commissionPct: 10,
+      totalTickets: 5000,
+      salesCloseAt: now + DAY,
+      drawAt: now + DAY + 2 * 60 * MIN,
+      prizes: [
+        { name: 'Cash MVR 3,000', valueCents: 300_000, quantity: 1 },
+        { name: 'Shopping voucher MVR 500', valueCents: 50_000, quantity: 4 },
+      ],
+    })
+    const pm = d.raffles.find((x) => x.id === pastMv.id)
+    pm.status = 'on_sale'
+    for (const n of pickFree(d, pm, 6)) await issueTicket(d, pm, { number: n, channel: 'online', buyerId: 'B-2001', mobile: '7771234' })
+    await giveEntries(pm, 'S-2001', 14, 9000)
+    await closeSalesIn(d, 'O-01', pm.id)
+    for (const p of pm.prizes) await drawPrizeIn(d, 'O-01', pm.id, p.id)
+    await revealSeedIn(d, 'O-01', pm.id)
+    pm.drawAt = now - 5 * DAY
+    pm.salesCloseAt = now - 5 * DAY - 2 * 60 * MIN
+    if (d.tickets.some((t) => t.raffleId === pm.id && t.buyerId === 'B-2001' && t.status === 'won')) break
+  }
+
+  const mvMega = await createRaffleIn(d, 'A-01', {
     countryId: 'MV',
-    title: 'Malé Shopping Festival Draw',
+    title: 'Maldives Mega Draw #24',
+    priceCents: 10_000, // MVR 100
+    commissionPct: 10,
     totalTickets: 20000,
-    commissionPerEntryCents: 500, // MVR 5 per entry given with a purchase
-    salesCloseAt: now + 20 * DAY,
-    drawAt: now + 20 * DAY + 3 * 60 * MIN,
+    salesCloseAt: now + 3 * DAY - 2 * 60 * MIN,
+    drawAt: now + 3 * DAY,
     prizes: [
-      { name: 'Motorbike', valueCents: 4_500_000, quantity: 1 },
-      { name: 'Shopping voucher MVR 1,000', valueCents: 100_000, quantity: 20 },
+      { name: 'Speedboat', valueCents: 45_000_000, quantity: 1 },
+      { name: 'Motorbike', valueCents: 4_500_000, quantity: 2 },
+      { name: 'Cash MVR 5,000', valueCents: 500_000, quantity: 22 },
     ],
   })
+  const mm = d.raffles.find((x) => x.id === mvMega.id)
+  mm.status = 'on_sale'
+  await giveEntries(mm, 'S-2001', 80, 400)
+  await giveEntries(mm, 'S-2002', 60, 250)
+  const nazim = await giveEntries(mm, 'S-2003', 40, 90)
+  for (const n of pickFree(d, mm, 3)) {
+    const { ticket } = await issueTicket(d, mm, { number: n, channel: 'online', buyerId: 'B-2002', mobile: '9601122' })
+    ticket.issuedAt = now - 3 * DAY
+  }
+  d.requests.push({ id: uuid(), type: 'void', ticketId: nazim[2].id, sellerId: 'S-2003', reason: 'Duplicate print', reissue: false, status: 'pending', at: now - 25 * MIN })
+
+  const mvWeekend = await createRaffleIn(d, 'A-01', {
+    countryId: 'MV',
+    title: 'Hulhumalé Weekend Draw #51',
+    priceCents: 5_000, // MVR 50
+    commissionPct: 10,
+    totalTickets: 10000,
+    salesCloseAt: now + 6 * DAY - 2 * 60 * MIN,
+    drawAt: now + 6 * DAY,
+    prizes: [
+      { name: 'Motorbike', valueCents: 4_500_000, quantity: 1 },
+      { name: 'Shopping voucher MVR 1,000', valueCents: 100_000, quantity: 9 },
+    ],
+  })
+  const mw = d.raffles.find((x) => x.id === mvWeekend.id)
+  mw.status = 'on_sale'
+  const shiuna = await giveEntries(mw, 'S-2002', 30, 180)
+  shiuna[1].reprintCount = 1
+  d.requests.push({ id: uuid(), type: 'reprint', ticketId: shiuna[1].id, sellerId: 'S-2002', reason: 'Further reprint', status: 'pending', at: now - 15 * MIN })
 
   await audit(d, 'system', 'demo.seeded', 'system', null)
   return d

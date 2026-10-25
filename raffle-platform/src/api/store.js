@@ -4,7 +4,7 @@
 // the real backend will use (open the buyer live-draw page in one tab and
 // the admin draw control in another to see results arrive live).
 
-const KEY = 'raffle-db-v2' // bump when the data shape changes; old data is reseeded
+const KEY = 'raffle-db-v4' // bump when the data shape changes; old data is reseeded
 const memory = new Map()
 
 const memoryStorage = { getItem: (k) => memory.get(k) ?? null, setItem: (k, v) => memory.set(k, v), removeItem: (k) => memory.delete(k) }

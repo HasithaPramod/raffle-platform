@@ -5,6 +5,7 @@ export function prizeKind(name = '') {
   const n = name.toLowerCase()
   if (n.includes('car') || n.includes('suv') || n.includes('van')) return 'car'
   if (n.includes('bike') || n.includes('motor') || n.includes('scooter')) return 'bike'
+  if (n.includes('boat') || n.includes('dhoni') || n.includes('yacht')) return 'boat'
   if (n.includes('voucher') || n.includes('gift')) return 'voucher'
   return 'cash'
 }
@@ -21,6 +22,21 @@ function Car() {
       <circle cx="72" cy="120" r="8" fill="var(--art-light)" />
       <circle cx="180" cy="120" r="19" fill="var(--art-ink)" />
       <circle cx="180" cy="120" r="8" fill="var(--art-light)" />
+    </>
+  )
+}
+
+function Boat() {
+  return (
+    <>
+      <path d="M8 128c18-8 34-8 52 0s34 8 52 0 34-8 52 0 34 8 52 0 26-6 20-4" fill="none" stroke="var(--art-glass)" strokeWidth="5" strokeLinecap="round" />
+      <path d="M18 104h188c8 0 12 4 8 10l-10 10c-4 4-8 6-14 6H52c-8 0-14-3-18-8z" fill="var(--art-main)" />
+      <path d="M30 104h176" stroke="var(--art-light)" strokeWidth="4" />
+      <path d="M78 104l14-28h62c10 0 18 6 22 14l6 14z" fill="var(--art-light)" />
+      <path d="M100 82h22v14h-26zM130 82h22c6 0 10 4 12 8l2 6h-36z" fill="var(--art-glass)" />
+      <path d="M92 76l10-18" stroke="var(--art-ink)" strokeWidth="5" strokeLinecap="round" />
+      <path d="M38 116h10M58 116h10" stroke="var(--art-light)" strokeWidth="4" strokeLinecap="round" />
+      <path d="M2 140c22-8 40-8 60 0s40 8 60 0 40-8 60 0 40 8 60 0" fill="none" stroke="var(--art-glass)" strokeWidth="5" strokeLinecap="round" />
     </>
   )
 }
@@ -83,6 +99,7 @@ export function PrizeArt({ name, className = '', label }) {
     <svg viewBox="0 0 244 150" className={`prize-art ${className}`} role="img" aria-label={label ?? `Illustration: ${name}`}>
       {kind === 'car' && <Car />}
       {kind === 'bike' && <Bike />}
+      {kind === 'boat' && <Boat />}
       {kind === 'cash' && <Cash />}
       {kind === 'voucher' && <Voucher />}
     </svg>
